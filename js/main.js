@@ -1,4 +1,58 @@
 document.addEventListener("DOMContentLoaded", function () {
+
+  // Procrastinators Card Preview Hover Logic (scoped to avoid redeclaration)
+  (function() {
+    const cards = document.querySelectorAll('.procrastinators-card');
+    const images = document.querySelectorAll('.procrastinators-preview img');
+
+    function showImage(index) {
+      images.forEach((img, i) => {
+        if (parseInt(img.dataset.index) === index) {
+          img.classList.add('active');
+        } else {
+          img.classList.remove('active');
+        }
+      });
+    }
+
+    // Show first image by default
+    showImage(0);
+
+    cards.forEach(card => {
+      card.addEventListener('mouseenter', () => {
+        const idx = parseInt(card.dataset.index);
+        showImage(idx);
+      });
+    });
+  })();
+
+  // Procrastinators functionality
+  const cards = document.querySelectorAll('.procrastinators-card');
+  const firstCard = cards[0];
+  let activeCard = null;
+
+  cards.forEach(card => {
+    card.addEventListener('mouseenter', () => {
+      // Clear previous active states
+      if(activeCard) {
+        activeCard.classList.remove('persist-active');
+        firstCard.classList.remove('persist-inactive');
+      }
+
+      // Only apply changes if it's not the first card
+      if(card !== firstCard) {
+        card.classList.add('persist-active');
+        firstCard.classList.add('persist-inactive');
+        activeCard = card;
+      } else {
+        // Reset to default if hovering first card
+        firstCard.classList.remove('persist-inactive');
+        cards.forEach(c => c.classList.remove('persist-active'));
+        activeCard = null;
+      }
+    });
+  });
+
   // Mobile menu toggle
   const mobileMenuButton = document.querySelector(".mobile-menu-button");
   const navLinks = document.querySelector(".nav-links");
@@ -49,6 +103,57 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
+// Counters functionality
+function runCounters() {
+  const counters = document.querySelectorAll('.count-up');
+  counters.forEach(counter => {
+    const target = parseFloat(counter.getAttribute('data-target'));
+    const isPercent = counter.textContent.includes('%');
+    const isPlus = counter.textContent.includes('+');
+    const isMillion = counter.textContent.includes('M');
+    let suffix = '';
+    if (isPercent) suffix = '%';
+    if (isPlus) suffix = '+';
+    if (isMillion) suffix = 'M';
+
+    let current = 0;
+    let increment = target / 100;
+    if (isMillion) increment = target / 100;
+
+    function updateCounter() {
+      current += increment;
+      if (current < target) {
+        let display = current;
+        if (isMillion) display = current.toFixed(2);
+        else display = Math.floor(current);
+        counter.textContent = display + suffix;
+        requestAnimationFrame(updateCounter);
+      } else {
+        counter.textContent = target + suffix;
+      }
+    }
+    updateCounter();
+  });
+}
+
+// Use Intersection Observer to trigger when .stats section is visible
+const statsSection = document.querySelector('.stats');
+let countersStarted = false;
+
+if (statsSection) {
+  const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !countersStarted) {
+        runCounters();
+        countersStarted = true;
+        observer.unobserve(statsSection);
+      }
+    });
+  }, { threshold: 0.3 }); // Adjust threshold as needed
+
+  observer.observe(statsSection);
+}
+
   // FAQ accordion functionality (enhanced)
   const faqItems = document.querySelectorAll(".faq-item");
 
@@ -69,31 +174,16 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Procrastinators functionality
-  const cards = document.querySelectorAll('.procrastinators-card');
-  const firstCard = cards[0];
-  let activeCard = null;
-
-  cards.forEach(card => {
-    card.addEventListener('mouseenter', () => {
-      // Clear previous active states
-      if(activeCard) {
-        activeCard.classList.remove('persist-active');
-        firstCard.classList.remove('persist-inactive');
-      }
-
-      // Only apply changes if it's not the first card
-      if(card !== firstCard) {
-        card.classList.add('persist-active');
-        firstCard.classList.add('persist-inactive');
-        activeCard = card;
-      } else {
-        // Reset to default if hovering first card
-        firstCard.classList.remove('persist-inactive');
-        cards.forEach(c => c.classList.remove('persist-active'));
-        activeCard = null;
+  //Show animation on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('animate');
+        observer.unobserve(entry.target); // Optional: Remove if you want it to trigger every time
       }
     });
   });
+
+  document.querySelectorAll('.scroll-animator').forEach(el => observer.observe(el));
 
 });
