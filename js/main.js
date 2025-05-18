@@ -207,11 +207,30 @@ if (statsSection) {
     loadMoreButton.style.display = "none";
   }
 
-  showInitialTestimonials();
+  function isMobile() {
+    return window.innerWidth <= 480;
+  }
 
-  loadMoreButton.addEventListener('click', function (e) {
-    e.preventDefault();
-    showAllTestimonials();
+  if (isMobile()) {
+    showInitialTestimonials();
+
+    loadMoreButton.addEventListener('click', function (e) {
+      e.preventDefault();
+      showAllTestimonials();
+    });
+  } else {
+    loadMoreButton.style.display = "none";
+    allCards.forEach(card => card.style.display = "block");
+  }
+
+  window.addEventListener("resize", function () {
+    if (isMobile()) {
+      showInitialTestimonials();
+      loadMoreButton.style.display = "block";
+    } else {
+      loadMoreButton.style.display = "none";
+      allCards.forEach(card => card.style.display = "block");
+    }
   });
 
 });
