@@ -179,11 +179,39 @@ if (statsSection) {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('animate');
-        observer.unobserve(entry.target); // Optional: Remove if you want it to trigger every time
+        observer.unobserve(entry.target);
       }
     });
   });
 
   document.querySelectorAll('.scroll-animator').forEach(el => observer.observe(el));
+
+  //Testimonials Load More
+  const allCards = document.querySelectorAll('.testimonial-card');
+  const loadMoreButton = document.querySelector('.testimonial-mobile-load-button');
+  
+  function showInitialTestimonials() {
+    for (let i = 0; i < allCards.length; i++) {
+      if (i < 4) {
+        allCards[i].style.display = "block";
+      } else {
+        allCards[i].style.display = "none";
+      }
+    }
+  }
+
+  function showAllTestimonials() {
+    for (let i = 4; i < allCards.length; i++) {
+      allCards[i].style.display = "block";
+    }
+    loadMoreButton.style.display = "none";
+  }
+
+  showInitialTestimonials();
+
+  loadMoreButton.addEventListener('click', function (e) {
+    e.preventDefault();
+    showAllTestimonials();
+  });
 
 });
