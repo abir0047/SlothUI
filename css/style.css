@@ -492,7 +492,7 @@ a {
 
 .procrastinators-content-preview {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 8px;
 }
 
@@ -966,7 +966,7 @@ a {
   width: 354.45px;
   height: 721px;
   position: relative;
-  left: 50px;
+  left: 10px;
 }
 
 .download-app-preview img:first-child {
@@ -1369,6 +1369,11 @@ footer {
     padding: 64px 24px;
     flex-direction: column;
     gap: 40px;
+  }
+
+  .download-buttons {
+    flex-direction: column;
+    text-align: center;
   }
 
   .download-app-preview {

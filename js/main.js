@@ -1,4 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
+  // Reload site on logo click
+  const reloadLogo = document.getElementById('reload-logo');
+  if (reloadLogo) {
+    reloadLogo.addEventListener('click', function() {
+      window.location.reload();
+    });
+  }
 
   // Procrastinators Card Preview Hover Logic (scoped to avoid redeclaration)
   (function() {
